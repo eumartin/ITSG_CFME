@@ -1,0 +1,20 @@
+- name: CF | Get auth token
+  uri:
+   url: https://forms.cloudmgmt.itsg01tlan.loc
+   method: GET
+   user: "{{ cf_user }}"
+   password: "{{ cf_password }}"
+   validate_certs: False
+  register: auth_token
+- set_fact: token="{{ auth_token.json.auth_token }}"
+
+
+- name: CF | Send custom property to CloudForms (service)
+  uri:
+   url: "https://forms.cloudmgmt.itsg01tlan.loc/api/services/{{ manageiq.service }}/custom_attributes"
+   method: POST
+   #HEADER_X-Auth-token: "{{ token }}"
+   HEADER_X-Auth-token: "{{ manageiq.api_token }}"
+   validate_certs: False
+   body: '{"action": "add", "resources": [ { "name": "phpipam_ip", "value": "{{ ipamresponse.ip }}" } ] }'
+   body_format: "json"

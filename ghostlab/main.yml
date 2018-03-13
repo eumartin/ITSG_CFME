@@ -1,0 +1,20 @@
+---
+# This playbook deploys the whole application stack in this site.
+- name: Trigguer list of roles sent from Service Dialog using extra_var roles
+  hosts: all
+  environment:
+    ansible_host_key_checking: false
+  remote_user: root
+  pre_tasks:
+    - debug: var=vars
+    - name: logging manageiq object
+      debug: var=manageiq
+      when: manageiq is defined
+   - name: List of roles
+     debug: var=rolescfme
+
+  roles:
+    - { role: roleA }
+    - { role: roleB }
+    - { role: roleC }
+    - { role: add_extra_attr_service, when: '"add_extra_attr_service" in rolescfme.split(",") or "php"  in rolescfme.split(",")' }
