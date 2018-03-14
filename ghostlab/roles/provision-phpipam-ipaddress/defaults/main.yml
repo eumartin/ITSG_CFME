@@ -1,0 +1,1 @@
+cfme_srv_network_mockup: "{{ itsg_ipam_subnet_id }}"

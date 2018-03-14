@@ -1,0 +1,29 @@
+---
+- name: Request Token
+  run_once: yes
+  delegate_to: localhost
+  uri:
+    url: "https://{{ itsg_ipam_url }}/api/{{ itsg_ipam_apiapp }}/user/"
+    return_content: yes
+    method: POST
+    user: "{{ itsg_vault_ipam_user }}"
+    password: "{{ itsg_vault_ipam_password }}"
+    force_basic_auth: yes
+  register: ipam_token
+  become: no
+
+- name: Request IP
+  delegate_to: localhost
+  uri:
+    url: "https://{{ itsg_ipam_url }}/api/{{ itsg_ipam_apiapp }}/addresses/first_free/{{ cfme_srv_network_mockup }}/"
+    return_content: yes
+    method: POST
+    status_code: 201
+    body_format: json
+    body: "{\"hostname\":\"{{ cfme_srv_hostname }}\",\"description\":\"{{ cfme_srv_appid }}\",\"owner\":\"{{ cfme_srv_requestor }}\"}" 
+    headers:
+      token: "{{ ipam_token.json.data.token }}"
+  register: ipam_ip_provided
+
+- debug: 
+    msg: "System {{ cfme_srv_hostname }} has IP {{ ipam_ip_provided.json.data }}"

@@ -1,0 +1,4 @@
+cfme_srv_hostname: 
+cfme_srv_appid:
+cfme_srv_requestor: 
+cfme_srv_network_mockup: "{{ itsg_ipam_subnet_id }}"
