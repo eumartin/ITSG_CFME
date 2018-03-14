@@ -10,11 +10,11 @@
     - name: logging manageiq object
       debug: var=manageiq
       when: manageiq is defined
-   - name: List of roles
-     debug: var=rolescfme
+    - name: List of roles
+      debug: var=rolescfme
 
   roles:
-    - { role: roleA }
-    - { role: roleB }
+    - { role: add_extra_attr_service }
+    - { role: create_service_vmware }
     - { role: roleC }
     - { role: add_extra_attr_service, when: '"add_extra_attr_service" in rolescfme.split(",") or "php"  in rolescfme.split(",")' }

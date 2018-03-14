@@ -1,0 +1,20 @@
+- name: CF | Get auth token
+  uri:
+   url: https://forms.cloudmgmt.itsg01tlan.loc
+   method: GET
+   user: "{{ cf_user }}"
+   password: "{{ cf_password }}"
+   validate_certs: False
+  register: auth_token
+- set_fact: token="{{ auth_token.json.auth_token }}"
+
+
+- name: CF | Order Service with the values
+  uri:
+   url: "https://forms.cloudmgmt.itsg01tlan.loc/api/service_catalogs/2/service_templates"
+   method: POST
+   #HEADER_X-Auth-token: "{{ token }}"
+   HEADER_X-Auth-token: "{{ manageiq.api_token }}"
+   validate_certs: False
+   body: '{"action": "order", "resources": [ { "href" : "http://localhost:3000/api/service_templates/7", "vm_name" : "{{ cfme_srv_hostname }}", "ip_addr" : " ipam_ip_provided.json.data" } ] }'
+   body_format: "json"
